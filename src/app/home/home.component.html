@@ -9,7 +9,8 @@
         <mat-tab label="Beginners">
 
             <courses-card-list
-                    [courses]="[]">
+                    [courses]="courses$ | async">
+                    <!-- [courses]="begginersCourses$ | async"> -->
 
             </courses-card-list>
 
@@ -18,7 +19,7 @@
         <mat-tab label="Advanced">
 
             <courses-card-list
-                    [courses]="[]"
+                    [courses]="advencedCourses$ | async"
 
             ></courses-card-list>
 

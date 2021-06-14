@@ -1,0 +1,66 @@
+
+import * as firebase from 'firebase/app';
+import 'firebase/firestore'
+
+// const config = {
+//   apiKey: "AIzaSyDxVU4OKY2hwSPFmLyqXLlhlGVrkztGtlw",
+//   authDomain: "fir-course-b2216.firebaseapp.com",
+//   projectId: "fir-course-b2216",
+//   storageBucket: "fir-course-b2216.appspot.com",
+//   messagingSenderId: "779671728360",
+//   appId: "1:779671728360:web:c1df5435f7bbab7830995d",
+//   measurementId: "G-GE5BGELT44"
+// };
+
+// firebase.initializeApp(config)
+
+// const db = firebase.firestore();
+
+// const settings = {timestampsInSnapshots:true}
+
+// db.settings(settings)
+
+
+//Pegando um campo especifico da "tabela" courses
+    // db.doc('courses/NoTJ4ZJb2t2f8YWxoOXq').get().then(snap => console.log(snap.data()))
+    // db.collection('courses') //Pegando todos os campos da "tabela" courses
+    // .get()
+    // .then(snaps => {
+    //   const courses: Course[] = snaps.docs.map(snap =>{
+    //     return <Course> {
+    //       id: snap.id,
+    //       ...snap.data()
+    //     }
+    //   })
+    //   console.log(courses)
+    // })
+
+
+
+    // this.db.collection('courses').valueChanges().subscribe(val => console.log(val)) -> retorna os dados da collection
+    // this.db.collection('courses').stateChanges() -> Retorna o campo editado
+
+    Snapshot changes will always give us back the current state of the collection, including the I.D. of
+    State changes is only going to give us back incremental changes to the collection since the first time that we subscribed.
+
+
+first() -> só pega os dados da primeira requisição (se atualizar no banco nao atualiza na tela)
+
+consulta com "filtros"
+return this.db.collection('courses', 
+            // ref => ref 
+            // .where("seqNo", ">", 0) //and 
+            // .where("seqNo", "<=", 5))
+            
+            //OR
+
+            ref =>  ref.orderBy('seqNo')
+              .startAt(0).endAt(5)
+            )
+
+            .snapshotChanges()
+            .pipe(
+            }), first());
+  }
+
+  ref => ref.where("seqNo", "==", 5).where("lessonsCount", ">=", 5)) -> precisa criar um indice pra lessonsCount

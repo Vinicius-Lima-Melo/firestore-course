@@ -1,9 +1,10 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Course} from '../model/course';
-import {tap} from 'rxjs/operators';
+import {finalize, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Lesson} from '../model/lesson';
+import { CoursesService } from 'app/services/courses.service';
 
 
 @Component({
@@ -15,27 +16,47 @@ export class CourseComponent implements OnInit {
 
   course: Course;
 
+  lessons: Lesson[]
+
+  lastPageLoaded = 0  
+
+  loading:boolean = false
+
   displayedColumns = ['seqNo', 'description', 'duration'];
 
   dataSource:any;
 
 
   constructor(
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute, private courseService: CoursesService) {
 
 
   }
 
   ngOnInit() {
+    this.loading = true
 
     this.course = this.route.snapshot.data['course'];
-
+    this.courseService
+        .findLessons(this.course.id)
+        .pipe(finalize(() => this.loading = false))
+        .subscribe(
+          lessons => this.lessons = lessons
+        );
 
 
   }
 
-  loadMore() {
 
+  loadMore() {
+    this.lastPageLoaded++;
+    this.loading = true
+    this.courseService
+        .findLessons(this.course.id, 'asc', this.lastPageLoaded)
+        .pipe(finalize(() => this.loading = false))
+        .subscribe(
+          lessons => this.lessons = this.lessons.concat(lessons)
+        );
   }
 
 
