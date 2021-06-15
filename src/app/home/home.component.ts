@@ -15,13 +15,16 @@ import { AngularFirestore } from '@angular/fire/firestore';
 export class HomeComponent implements OnInit {
 
     courses$: Observable<Course[]>
-    begginersCourses$ : Observable<Course[]>
+    beginnersCourses$ : Observable<Course[]>
     advencedCourses$ : Observable<Course[]>
     constructor(private coursesService: CoursesService) {
 
     }
 
     ngOnInit() {
+       this.reloadCourses()
+    }  
+    reloadCourses(){
         this.courses$ = this.coursesService.loadAllCourses();
         
         // this.db.collection('courses').snapshotChanges()
@@ -33,11 +36,11 @@ export class HomeComponent implements OnInit {
         //             }
         //         });
         //     }));
-        // this.begginersCourses$ = this.courses$
-        //     .pipe(map(courses => courses.filter(course => course.categories.includes("BEGINNER")))
-        // )
-        // this.advencedCourses$ = this.courses$
-        //     .pipe(map(courses => courses.filter(course => course.categories.includes("ADVANCED")))
-        // )
-    }   
+        this.beginnersCourses$ = this.courses$
+            .pipe(map(courses => courses.filter(course => course.categories.includes("BEGINNER")))
+        )
+        this.advencedCourses$ = this.courses$
+            .pipe(map(courses => courses.filter(course => course.categories.includes("ADVANCED")))
+        )
+    } 
 }

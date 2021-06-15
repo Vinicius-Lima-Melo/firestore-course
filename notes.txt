@@ -64,3 +64,37 @@ return this.db.collection('courses',
   }
 
   ref => ref.where("seqNo", "==", 5).where("lessonsCount", ">=", 5)) -> precisa criar um indice pra lessonsCount
+
+
+
+app.module.ts:
+AngularFirestoreModule.enablePersistence() -> usa cache e a aplicação pode rodar offline
+
+.batch(); -> commits
+
+
+Atualizar um campo com transaction
+ async runTransaction(){
+    const newCounter = await this.db.firestore.runTransaction(async transaction =>{
+      
+      console.log("Running transaction...");
+
+      const courseRef = this.db.doc('/courses/VVZH6YCagrynUsfQp38K').ref
+
+      const snap = await transaction.get(courseRef)
+
+      const course = <Course> snap.data()
+      const lessonsCount = course.lessonsCount +1
+
+      transaction.update(courseRef, {lessonsCount})
+
+      return lessonsCount
+    });
+
+    console.log(`Result lessons count: ${newCounter}`)
+  }
+
+
+references -> foreign key
+
+npm install firebase-tools -> passa as configuraçoes do firestore para a aplicação e pode apagar de la

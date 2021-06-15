@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Course } from 'app/model/course';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import {convertSnaps} from 'app/services/db-util'
 import { OrderByDirection } from '@firebase/firestore-types';
@@ -15,6 +15,10 @@ export class CoursesService {
 
   constructor(private db: AngularFirestore) { }
 
+  saveCourse(courseId: string, changes:Partial<Course>):Observable<any>{
+    return from(this.db.doc(`courses/${courseId}`).update(changes))
+  }
+
   loadAllCourses(): Observable<Course[]>{
     //  return this.db.collection('courses', ref => ref.orderBy('seqNo').where("seqNo", "==", 2)).snapshotChanges()
      return this.db.collection('courses', 
@@ -24,8 +28,8 @@ export class CoursesService {
             ref => ref.orderBy('seqNo'))
             .snapshotChanges()
             .pipe(
-              map(snaps => convertSnaps<Course>(snaps))
-            )
+              map(snaps => convertSnaps<Course>(snaps)), 
+              first())
   }
 
   findCourseByUrl(courseUrl: string) {
@@ -52,7 +56,5 @@ export class CoursesService {
               first()
             )
   }
-  saveCourse(courseId: string, changes:Partial<Course>){
-
-  }
+  
 }
